@@ -82,5 +82,7 @@ When the car reaches the AI camera, the camera flashes and the final score revea
 
 Finally, Glixon appears with the final score reveal and background music, while the player receives their Mysore Pak reward.
 
+Screenshorts : https://drive.google.com/drive/folders/11c6NAA8GeiEOdEmJ53BhHi2adk_kbCAb?usp=drive_link
+
 ![alt text](image.png)
 ![alt text](image-1.png)
