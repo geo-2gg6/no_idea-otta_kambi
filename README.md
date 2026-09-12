@@ -1,125 +1,86 @@
-# Otta Kambi
+<img width="1280" height="640" alt="git (1)" src="https://github.com/user-attachments/assets/8920b256-2ba8-4988-b824-5351134eb4bd" />
 
-### A Useless One-String Guitar Experience
-
-> *"A small practice, a louder you."*
-
-**Otta Kambi** is a playful, chaotic, Malayalam pop-culture-inspired browser guitar game where you don't need to know how to play guitar.
-
-Just pick your character, grab your keyboard, and make some noise. 🎸
-
-Built as part of **Useless Project 3.0 by TinkerHub**.
-
----
-
-## Developed By
-
-**Freya Rose**  
-**Geo George**
-
-### Useless Project 3.0
-Organized by **TinkerHub**
-
----
-
-# What is Otta Kambi?
-
-Otta Kambi is a simple browser-based guitar game built around one idea:
-
-> **What if playing guitar was as simple as pressing a few keyboard keys?**
-
-The player gets a virtual one-string guitar and can either:
-
-- freely experiment with the guitar
-- learn songs through guided tutorials
-- make mistakes and get roasted by Nadasha
-- collect Mysore Pak
-- get judged by Glixon
-- and eventually have their musical journey witnessed by an AI camera.
-
-The entire experience is intentionally silly.
-
-There is no attempt to create a serious guitar-learning application.
-
-It's supposed to be fun.
-
----
-
-# Features
-
-## Character Selection
-
-The experience begins with a character-selection screen inspired by streaming-service profile selection interfaces.
-
-Choose between:
-
-### 🔵 MP3.King
-
-### 🩷 Room17
-
-### 🚨 Hari Ettan
-
-Hari Ettan is not playable.
-
-Selecting Hari Ettan triggers a special warning sequence.
+# Otta Kambi 🎸
 
 
-Hari Ettan appears with a warning-style presentation and says:
+## Basic Details
+### Team Name: No Idea
 
-> **"I don't have time for this.  
-> Naale oru stage show ind."**
 
-The user can then return to the character-selection screen.
+### Team Members
+- Team Lead: Geo George - Christ College of Engineering, Irinjalakuda
+- Member 2: Freya Rose - Christ College of Engineering, Irinjalakuda
 
----
+### Project Description
+Otta Kambi is a chaotic one-string virtual guitar game where players can turn their PC keyboard into a guitar. Choose a character, play songs, experiment freely, collect Mysore Pak points, and survive the judgement of the characters along the way. 🎸
 
-# Character Introduction
+### The Problem (that doesn't exist)
+Have you ever wanted to play a guitar without actually owning a guitar, knowing how to play one, or even knowing what you're doing?
 
-After selecting a playable character, Baiju Chettan makes an entrance.
+We decided this was a serious problem that absolutely nobody asked us to solve.
 
-Baiju appears with his guitar and introduces the player to the world of Otta Kambi.
+### The Solution (that nobody asked for)
+Introducing Otta Kambi — a browser-based one-string guitar experience where your keyboard becomes a guitar.
 
-His character image and dialogue audio are separate assets so that the introduction can be animated and played independently.
+Just press A, S, D, F, G, H, J or K and make some music.
 
----
+In Free Play mode, there are absolutely no rules. Press whatever you want, whenever you want. In Tutorial mode, however, you actually have to follow the notes and try not to disappoint Nadasha.
 
-# Home
+Complete a song, collect Mysore Pak, let the Ford Ikon drive across the screen, get photographed by an AI camera, and finally face Glixon for your score.
 
-The home screen provides access to the main game modes.
+Because apparently, this was necessary.
 
-The interface includes:
+## Technical Details
+### Technologies/Components Used
+For Software:
+- JavaScript
+- HTML
+- CSS
+- React
+- Vite
+- Web Audio API / HTML5 Audio
+- LocalStorage
+- Git
+- GitHub
+- VS Code
+- Figma
+- GitHub Copilot
 
-- Home
-- Songs
-- Learn
-- Profile
-- Start Playing
-- Tutorial songs
-- Free Play
+For Hardware:
+- No additional hardware required
+- PC/Laptop
+- Keyboard
 
-The design intentionally remains simple rather than becoming a complicated game dashboard.
+### Implementation
+For Software:
 
----
+Otta Kambi is implemented as a React-based interactive web application.
 
-# Two Ways to Play
+The application begins with a character selection screen where the player can choose between MP3.King, Room17 and Hari Ettan.
 
-Otta Kambi has two fundamentally different experiences.
+MP3.King and Room17 lead into the main game while changing the visual theme to prioritize blue or pink respectively, while still retaining both colors.
 
-## 1. Free Play
+Hari Ettan is a special character. Selecting him triggers a black and red warning screen with his dialogue:
 
-Free Play is exactly what it sounds like.
+> "I don't have time for this. Naale oru stage show ind."
 
-There are **no rules**.
+After selecting a playable character, Baiju Chettan appears with an introduction before taking the player to the home page.
 
-The player can press any supported key in any order.
+From the home page, the player can choose between Free Play and Tutorial/Song mode.
 
-For example:
+In Free Play, there are no rules. The player can press any supported keyboard key in any order and every key produces a corresponding guitar sound.
 
-```text
-A S D F
-K K A
-J F D
-A A A
-G H J K
+In Tutorial/Song mode, the player follows a predefined sequence of notes and must press the correct keyboard key at the correct time. Correct notes increase the score and Mysore Pak, while mistakes can eventually trigger Nadasha saying:
 
-inni idhoke nadakonnu kand ariyaam😂
+> "Don't produce too much okay!"
+
+After completing a song, the player's score, accuracy, notes and Mysore Pak are calculated.
+
+The Ford Ikon then travels from left to right near the bottom of the interface as a simple animation. It is not a progress bar and does not represent a percentage.
+
+When the car reaches the AI camera, the camera flashes and the final score reveal begins.
+
+Finally, Glixon appears with the final score reveal and background music, while the player receives their Mysore Pak reward.
+
+![alt text](image.png)
+![alt text](image-1.png)
