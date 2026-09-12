@@ -14,6 +14,7 @@ export class GameEngine {
   private startedAt = 0
   private noteIndex = 0
   private active = false
+  private lastRenderAt = -Infinity
 
   onEvent(listener: EngineListener) { this.listener = listener }
 
@@ -22,6 +23,7 @@ export class GameEngine {
     this.song = song
     this.noteIndex = 0
     this.startedAt = performance.now()
+    this.lastRenderAt = -Infinity
     this.active = true
     this.tick()
   }
@@ -75,7 +77,11 @@ export class GameEngine {
     const elapsed = this.currentElapsed()
     const note = this.song.notes[this.noteIndex]
     if (!note) return
-    this.listener?.({ type: 'note', index: this.noteIndex, key: note.key, elapsed })
+    // Keep the game clock precise, but avoid rerendering the whole React screen every frame.
+    if (elapsed - this.lastRenderAt >= 1 / 30 || this.lastRenderAt < 0) {
+      this.lastRenderAt = elapsed
+      this.listener?.({ type: 'note', index: this.noteIndex, key: note.key, elapsed })
+    }
     if (this.active) this.frame = window.requestAnimationFrame(this.tick)
   }
 }

@@ -12,7 +12,7 @@ type Mode = 'freeplay' | 'tutorial'
 type Stats = { score: number; perfect: number; good: number; missed: number; combo: number; maxCombo: number; mysorePak: number }
 
 const themes = {
-  'MP3.KING': { primary: '#f20b73', secondary: '#1bb8ff', accent: '#18f4ee', background: '#13051a' },
+  'MP3.KING': { primary: '#1bb8ff', secondary: '#f20b73', accent: '#18f4ee', background: '#13051a' },
   ROOM17: { primary: '#f20b73', secondary: '#1bb8ff', accent: '#18f4ee', background: '#13051a' },
 } as const
 
@@ -63,6 +63,7 @@ function App() {
 
   useEffect(() => {
     void audioRef.current.preloadGuitar()
+    void audioRef.current.preloadDialogue()
   }, [])
 
   useEffect(() => {
@@ -86,7 +87,7 @@ function App() {
 
   useEffect(() => {
     const audio = audioRef.current
-    if (!dialogue) { audio.stopAllDialogue(); return }
+    if (!dialogue) return
     const name = dialogue === 'joel' ? 'joel' : 'nadasha'
     let cancelled = false
     void audio.playDialogue(name).then(() => {
@@ -186,7 +187,10 @@ function App() {
     setDialogue('joel')
   }
 
-  const beginMode = () => {
+  const beginMode = async () => {
+    await audioRef.current.unlock()
+    await audioRef.current.preloadGuitar()
+    await audioRef.current.preloadDialogue()
     setDialogue(null)
     if (mode === 'freeplay') {
       setScreen('freeplay')
@@ -198,7 +202,7 @@ function App() {
     setNoteIndex(0)
     setElapsed(0)
     setScreen('tutorial')
-    window.setTimeout(() => engineRef.current.start(song), 30)
+    engineRef.current.start(song)
   }
 
   const leaveGame = () => { engineRef.current.stop(); setDialogue(null); setScreen('home') }
@@ -241,7 +245,7 @@ function App() {
     <div className="mysore-hud"><img src={assets.game.mysorePak} alt="Mysore Pak" /><span>× {stats.mysorePak}</span></div>
     {screen === 'character' && renderCharacter()}
     {screen === 'warning' && <section className="screen active warning-screen"><div className="warning-card"><div className="warning-mark">!</div><img src={assets.characters.hariWarning} alt="Hari Ettan warning" className="warning-character" /><h2>HARI ETTAN</h2><p>"I don't have time for this.</p><p>Naale oru stage show ind."</p><button className="main-btn danger" type="button" onClick={() => setScreen('character')}>GO BACK</button></div></section>}
-    {screen === 'baiju' && <section className="screen active intro-screen baiju-intro"><div className="intro-copy"><span className="badge">BAIJU INTRO</span><div className="speech-bubble">Aha... Otta kambi!</div><h1 className="comic-title">READY<br />FOR MUSIC?</h1><p>One string. One attitude. Zero chill.</p><button className="main-btn" type="button" onClick={() => setScreen('home')}>CONTINUE</button></div><img src={assets.characters.baiju} alt="Baiju Chettan" className="hero-shot" /></section>}
+    {screen === 'baiju' && <section className="screen active intro-screen baiju-intro"><div className="intro-copy"><span className="badge">BAIJU XAVIER</span><div className="speech-bubble">Aha... Otta kambi!</div><h1 className="comic-title">READY<br />FOR MUSIC?</h1><p>One string. One attitude. Zero chill.</p><button className="main-btn" type="button" onClick={() => setScreen('home')}>CONTINUE</button></div><img src={assets.characters.baiju} alt="Baiju Chettan" className="hero-shot" /></section>}
     {screen === 'home' && renderHome()}
     {screen === 'freeplay' && renderGame(true)}
     {screen === 'tutorial' && renderGame(false)}
