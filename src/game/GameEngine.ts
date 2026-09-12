@@ -14,7 +14,6 @@ export class GameEngine {
   private startedAt = 0
   private noteIndex = 0
   private active = false
-  private readonly window = { perfect: 0.16, good: 0.32, miss: 0.52 }
 
   onEvent(listener: EngineListener) { this.listener = listener }
 
@@ -49,14 +48,13 @@ export class GameEngine {
     if (!this.active || !this.song) return
     const note = this.song.notes[this.noteIndex]
     if (!note) return
-    const delta = Math.abs(this.currentElapsed() - note.time)
     if (key !== note.key) {
       this.listener?.({ type: 'judgment', judgment: 'MISS', key })
       return
     }
-    const judgment = delta <= this.window.perfect ? 'PERFECT' : delta <= this.window.good ? 'GOOD' : delta <= this.window.miss ? 'MISS' : 'MISS'
+    const judgment = 'PERFECT'
     this.listener?.({ type: 'judgment', judgment, key })
-    if (judgment !== 'MISS') this.advance()
+    this.advance()
   }
 
   getCurrentNote() { return this.song?.notes[this.noteIndex] ?? null }
@@ -78,10 +76,6 @@ export class GameEngine {
     const note = this.song.notes[this.noteIndex]
     if (!note) return
     this.listener?.({ type: 'note', index: this.noteIndex, key: note.key, elapsed })
-    if (elapsed > note.time + this.window.miss) {
-      this.listener?.({ type: 'judgment', judgment: 'MISS', key: note.key })
-      this.advance()
-    }
     if (this.active) this.frame = window.requestAnimationFrame(this.tick)
   }
 }

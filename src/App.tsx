@@ -12,7 +12,7 @@ type Mode = 'freeplay' | 'tutorial'
 type Stats = { score: number; perfect: number; good: number; missed: number; combo: number; maxCombo: number; mysorePak: number }
 
 const themes = {
-  'MP3.KING': { primary: '#1bb8ff', secondary: '#f20b73', accent: '#18f4ee', background: '#13051a' },
+  'MP3.KING': { primary: '#f20b73', secondary: '#1bb8ff', accent: '#18f4ee', background: '#13051a' },
   ROOM17: { primary: '#f20b73', secondary: '#1bb8ff', accent: '#18f4ee', background: '#13051a' },
 } as const
 
@@ -37,7 +37,7 @@ function App() {
   const [elapsed, setElapsed] = useState(0)
   const [toast, setToast] = useState('')
   const [dialogue, setDialogue] = useState<'joel' | 'nadasha' | null>(null)
-  const [, setConsecutiveMisses] = useState(0)
+  const [dialogueReady, setDialogueReady] = useState(false)
   const [flash, setFlash] = useState(false)
   const [audioEnabled, setAudioEnabled] = useState(true)
   const [musicEnabled, setMusicEnabled] = useState(true)
@@ -76,10 +76,27 @@ function App() {
   }, [character, stats])
 
   useEffect(() => {
-    if (screen === 'baiju') audioRef.current.playDialogue('baiju')
-    if (screen === 'warning') audioRef.current.playDialogue('hari')
-    if (screen === 'results') audioRef.current.playMusic('glixon')
+    const audio = audioRef.current
+    audio.stopAllDialogue()
+    if (screen === 'baiju') void audio.playDialogue('baiju')
+    if (screen === 'warning') void audio.playDialogue('hari')
+    if (screen === 'results') audio.playMusic('glixon')
+    return () => audio.stopAllDialogue()
   }, [screen])
+
+  useEffect(() => {
+    const audio = audioRef.current
+    if (!dialogue) { audio.stopAllDialogue(); return }
+    const name = dialogue === 'joel' ? 'joel' : 'nadasha'
+    let cancelled = false
+    void audio.playDialogue(name).then(() => {
+      if (!cancelled) setDialogueReady(true)
+    })
+    return () => {
+      cancelled = true
+      audio.stopDialogue(name)
+    }
+  }, [dialogue])
 
   useEffect(() => {
     const engine = engineRef.current
@@ -94,11 +111,8 @@ function App() {
           const nextStats = { ...statsRef.current, missed: statsRef.current.missed + 1, combo: 0 }
           statsRef.current = nextStats
           setStats(nextStats)
-          setConsecutiveMisses((value) => {
-            const next = value + 1
-            if (next >= 3) setDialogue('nadasha')
-            return next
-          })
+          setDialogueReady(false)
+          setDialogue('nadasha')
           notify('MISS')
         } else {
           const combo = statsRef.current.combo + 1
@@ -113,7 +127,6 @@ function App() {
           }
           statsRef.current = nextStats
           setStats(nextStats)
-          setConsecutiveMisses(0)
           notify(event.judgment === 'PERFECT' ? 'PERFECT +100' : 'GOOD +50')
         }
       }
@@ -169,8 +182,8 @@ function App() {
   const openMode = (nextMode: Mode, nextSong = song) => {
     setMode(nextMode)
     setSong(nextSong)
+    setDialogueReady(false)
     setDialogue('joel')
-    audioRef.current.playDialogue('joel')
   }
 
   const beginMode = () => {
@@ -184,7 +197,6 @@ function App() {
     setStats(cleanStats)
     setNoteIndex(0)
     setElapsed(0)
-    setConsecutiveMisses(0)
     setScreen('tutorial')
     window.setTimeout(() => engineRef.current.start(song), 30)
   }
@@ -229,14 +241,14 @@ function App() {
     <div className="mysore-hud"><img src={assets.game.mysorePak} alt="Mysore Pak" /><span>× {stats.mysorePak}</span></div>
     {screen === 'character' && renderCharacter()}
     {screen === 'warning' && <section className="screen active warning-screen"><div className="warning-card"><div className="warning-mark">!</div><img src={assets.characters.hariWarning} alt="Hari Ettan warning" className="warning-character" /><h2>HARI ETTAN</h2><p>"I don't have time for this.</p><p>Naale oru stage show ind."</p><button className="main-btn danger" type="button" onClick={() => setScreen('character')}>GO BACK</button></div></section>}
-    {screen === 'baiju' && <section className="screen active intro-screen"><div className="intro-copy"><span className="badge">BAIJU INTRO</span><div className="speech-bubble">Aha... Otta kambi!</div><h1 className="comic-title">READY<br />FOR MUSIC?</h1><p>One string. One attitude. Zero chill.</p><button className="main-btn" type="button" onClick={() => setScreen('home')}>CONTINUE</button></div><img src={assets.characters.baiju} alt="Baiju Chettan" className="hero-shot" /></section>}
+    {screen === 'baiju' && <section className="screen active intro-screen baiju-intro"><div className="intro-copy"><span className="badge">BAIJU INTRO</span><div className="speech-bubble">Aha... Otta kambi!</div><h1 className="comic-title">READY<br />FOR MUSIC?</h1><p>One string. One attitude. Zero chill.</p><button className="main-btn" type="button" onClick={() => setScreen('home')}>CONTINUE</button></div><img src={assets.characters.baiju} alt="Baiju Chettan" className="hero-shot" /></section>}
     {screen === 'home' && renderHome()}
     {screen === 'freeplay' && renderGame(true)}
     {screen === 'tutorial' && renderGame(false)}
     {screen === 'complete' && <section className="screen active camera-screen"><h1 className="comic-title">CAMERA READY!</h1><p>The Ford Ikon has arrived.</p></section>}
     {screen === 'results' && renderResults()}
-    {dialogue === 'joel' && <DialoguePopup image={assets.characters.joel} alt="Joel" title="AYYAPPAA!" buttonLabel="BEGIN" onClose={() => { setDialogue(null); setScreen('home') }} onContinue={beginMode}><h2>Ready to make some noise?</h2><p>Time to hit the right note, macha!</p></DialoguePopup>}
-    {dialogue === 'nadasha' && <DialoguePopup image={assets.characters.nadasha} alt="Nadasha" title="ENOUGH!" buttonLabel="BACK TO SONG" onClose={() => setDialogue(null)} onContinue={() => { setDialogue(null); setConsecutiveMisses(0) }}><h2>Don't produce too much okay!</h2></DialoguePopup>}
+    {dialogue === 'joel' && <DialoguePopup image={assets.characters.joel} alt="Joel" title="AYYAPPAA!" buttonLabel="BEGIN" audioReady={dialogueReady} onClose={() => { setDialogue(null); setScreen('home') }} onContinue={beginMode}><h2>Ready to make some noise?</h2><p>Time to hit the right note, macha!</p></DialoguePopup>}
+    {dialogue === 'nadasha' && <DialoguePopup image={assets.characters.nadasha} alt="Nadasha" title="ENOUGH!" buttonLabel="BACK TO SONG" audioReady={dialogueReady} onClose={() => setDialogue(null)} onContinue={() => setDialogue(null)}><h2>Don't produce too much okay!</h2></DialoguePopup>}
     <div className={`toast ${toast ? 'show' : ''}`}>{toast}</div>
   </div>
 }

@@ -11,7 +11,10 @@ export class AudioEngine {
 
   constructor() {
     for (const [name, url] of Object.entries(assets.dialogue)) {
-      this.dialogue.set(name as AudioName, new Audio(url))
+      const audio = new Audio(url)
+      audio.preload = 'auto'
+      audio.load()
+      this.dialogue.set(name as AudioName, audio)
     }
   }
 
@@ -66,17 +69,35 @@ export class AudioEngine {
     source.start()
   }
 
-  playDialogue(name: AudioName) {
-    if (!this.enabled) return
+  playDialogue(name: AudioName): Promise<void> {
+    if (!this.enabled) return Promise.resolve()
     const audio = this.dialogue.get(name)
-    if (!audio) return
+    if (!audio) return Promise.resolve()
     audio.currentTime = 0
-    void audio.play().catch((error) => console.error(`Unable to play dialogue ${name}`, error))
+    return new Promise((resolve) => {
+      const finish = () => resolve()
+      const play = () => {
+        void audio.play().catch((error) => {
+          console.error(`Unable to play dialogue ${name}`, error)
+          resolve()
+        })
+      }
+      audio.addEventListener('ended', finish, { once: true })
+      if (audio.readyState >= HTMLMediaElement.HAVE_FUTURE_DATA) play()
+      else audio.addEventListener('canplay', play, { once: true })
+    })
   }
 
   stopDialogue(name: AudioName) {
     const audio = this.dialogue.get(name)
-    audio?.pause()
+    if (audio) {
+      audio.pause()
+      audio.currentTime = 0
+    }
+  }
+
+  stopAllDialogue() {
+    for (const name of this.dialogue.keys()) this.stopDialogue(name)
   }
 
   playCameraFlash() {
