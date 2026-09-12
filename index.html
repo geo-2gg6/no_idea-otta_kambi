@@ -1,1 +1,252 @@
 
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Otta Kambi — One String Guitar</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Baloo+2:wght@600;700;800&family=Inter:wght@500;600;700;800;900&display=swap');
+:root{
+  --pink:#f20b73; --pink2:#ff3d91; --cyan:#18f4ee; --ink:#13051a;
+  --cream:#ffe56a; --white:#fffaf0; --red:#e52632; --panel:#1b0924;
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--ink);color:var(--white);font-family:Inter,system-ui,sans-serif;overflow-x:hidden}
+button{font:inherit;cursor:pointer}
+.app{min-height:100vh;background:
+ radial-gradient(circle at 50% 25%,rgba(255,255,255,.09) 0 2px,transparent 3px) 0 0/28px 28px,
+ linear-gradient(135deg,#ff0b79 0%,#e60a71 55%,#c70867 100%);
+ position:relative;isolation:isolate}
+.app:before,.app:after{content:"";position:fixed;z-index:-1;width:330px;height:90px;background:var(--cyan);filter:drop-shadow(0 0 0 var(--ink));opacity:.9;transform:rotate(-28deg);clip-path:polygon(0 35%,65% 35%,52% 0,100% 50%,52% 100%,65% 65%,0 65%,18% 50%);pointer-events:none}
+.app:before{left:-100px;top:80px}.app:after{right:-100px;bottom:90px;transform:rotate(152deg)}
+.screen{display:none;min-height:100vh;padding:24px clamp(18px,4vw,60px);position:relative}
+.screen.active{display:block}
+.comic-title{font-family:"Baloo 2";font-weight:800;letter-spacing:-2px;line-height:.85}
+.badge{display:inline-flex;align-items:center;gap:8px;background:var(--cream);color:var(--ink);border:3px solid var(--ink);border-radius:999px;padding:8px 15px;font-weight:900;box-shadow:5px 5px 0 var(--ink)}
+.btn{border:3px solid var(--ink);border-radius:999px;background:var(--cream);color:var(--ink);font-weight:900;padding:15px 28px;box-shadow:6px 6px 0 var(--ink);transition:.12s transform,.12s box-shadow}
+.btn:hover{transform:translate(-2px,-2px);box-shadow:8px 8px 0 var(--ink)}
+.btn.dark{background:var(--panel);color:var(--white);border-color:var(--white);box-shadow:5px 5px 0 var(--ink)}
+.btn.cyan{background:var(--cyan)}
+.topbar{height:64px;background:var(--panel);border:3px solid var(--ink);border-radius:18px;display:flex;align-items:center;padding:0 18px;gap:22px;box-shadow:7px 7px 0 var(--ink);position:relative;z-index:5}
+.brand{font-family:"Baloo 2";font-size:25px;font-weight:900;white-space:nowrap}.brand span{color:var(--cream)}
+.nav{display:flex;gap:22px;margin:auto;font-weight:800}.nav button{background:none;border:0;color:white}.nav button.active{color:var(--cyan)}
+.profile{display:flex;align-items:center;gap:10px;font-size:12px}.avatar{width:36px;height:36px;border-radius:50%;object-fit:cover;border:2px solid var(--cyan)}
+/* intro */
+#intro{overflow:hidden;padding:0}.intro-inner{min-height:100vh;display:grid;grid-template-columns:1.1fr .9fr;align-items:center;max-width:1500px;margin:auto;padding:35px 5vw}
+.intro-copy{position:relative;z-index:2}.intro-copy h1{font-size:clamp(72px,9vw,145px);color:white;text-shadow:9px 9px 0 var(--ink);margin:0}.intro-copy h1 em{display:block;color:var(--cream);font-style:normal}.intro-copy p{font-family:"Baloo 2";font-size:28px;margin:25px 0}.speech{display:inline-block;background:white;color:var(--ink);border:5px solid var(--ink);border-radius:50%;padding:24px 34px;font-family:"Baloo 2";font-size:27px;transform:rotate(-3deg);box-shadow:8px 8px 0 var(--ink)}
+.hero-char{height:95vh;max-height:900px;width:100%;object-fit:contain;object-position:bottom center;filter:drop-shadow(10px 10px 0 var(--ink))}
+.intro-controls{display:flex;gap:16px;margin-top:24px}
+/* home */
+.home-grid{max-width:1450px;margin:55px auto 0;display:grid;grid-template-columns:1.15fr .85fr;gap:36px;align-items:center}.welcome h2{font-size:56px;margin:0 0 12px}.welcome p{font-family:"Baloo 2";font-size:25px;margin:0 0 25px}
+.guitar-stage{min-height:430px;display:grid;place-items:center;position:relative}.guitar{width:min(720px,95%);height:360px;position:relative;transform:rotate(-4deg);filter:drop-shadow(9px 12px 0 var(--ink))}
+.guitar-body{position:absolute;width:48%;height:76%;left:7%;top:15%;background:linear-gradient(145deg,#ffda78,#f5a93e 65%,#7e3918);border:8px solid var(--ink);border-radius:46% 54% 50% 50%/48% 42% 58% 52%}.guitar-body:after{content:"";position:absolute;width:30%;aspect-ratio:1;border-radius:50%;left:45%;top:34%;background:#210e0b;border:7px solid var(--ink)}
+.guitar-neck{position:absolute;left:42%;top:36%;width:52%;height:22%;background:linear-gradient(#6e3119,#35130c);border:7px solid var(--ink);border-radius:12px}.guitar-head{position:absolute;right:-8%;top:25%;width:13%;height:44%;background:#542313;border:7px solid var(--ink);border-radius:12px}.guitar-string{position:absolute;left:10%;right:-5%;top:48%;height:5px;background:#f8f1d4;box-shadow:0 8px 0 rgba(255,255,255,.35);z-index:3}.fretmarks{position:absolute;left:46%;top:37%;width:45%;height:20%;display:flex;z-index:4}.fretmarks i{flex:1;border-left:3px solid rgba(255,231,175,.75)}.tutorials{display:grid;grid-template-columns:1fr 1fr;gap:14px}.song-card{background:var(--panel);border:3px solid var(--white);border-radius:20px;padding:17px;min-height:105px;box-shadow:6px 6px 0 var(--ink)}.song-card b{display:block;color:var(--cyan);font-size:18px}.song-card small{display:block;margin:6px 0 13px}.song-card button{border:2px solid var(--cream);background:transparent;color:var(--cream);border-radius:999px;padding:6px 12px;font-weight:800}
+/* popup */
+.overlay{position:fixed;inset:0;background:rgba(10,0,20,.72);backdrop-filter:blur(4px);display:none;align-items:center;justify-content:center;z-index:50;padding:20px}.overlay.show{display:flex}
+.dialog{width:min(850px,96vw);background:var(--cyan);border:6px solid var(--ink);border-radius:34px;box-shadow:14px 14px 0 var(--ink);display:grid;grid-template-columns:45% 55%;overflow:hidden;position:relative}.dialog img{width:100%;height:100%;min-height:420px;object-fit:cover;object-position:center}.dialog-copy{padding:50px 42px;display:flex;flex-direction:column;justify-content:center;color:var(--ink)}.dialog-copy h2{font-family:"Baloo 2";font-size:62px;margin:0;line-height:.9}.bubble{background:white;border:5px solid var(--ink);border-radius:45% 45% 45% 20%;padding:18px 25px;font-family:"Baloo 2";font-size:42px;display:inline-block;transform:rotate(-3deg);margin-bottom:25px}.close{position:absolute;right:16px;top:16px;width:42px;height:42px;border-radius:50%;border:3px solid var(--ink);background:white;font-weight:900;z-index:2}
+/* play */
+.play-wrap{max-width:1500px;margin:25px auto}.play-head{display:flex;justify-content:space-between;align-items:center;gap:15px}.progress{height:14px;background:var(--panel);border:3px solid var(--ink);border-radius:99px;overflow:hidden;flex:1;max-width:500px}.progress i{display:block;height:100%;background:var(--cyan);width:0}.play-board{margin-top:28px;display:grid;grid-template-columns:1fr 330px;gap:25px}.game-card{background:rgba(10,2,20,.72);border:4px solid var(--white);border-radius:28px;padding:30px;min-height:600px;position:relative}.note-lane{position:absolute;left:20%;right:20%;top:25%;height:60%;border-left:4px dashed white;border-right:4px dashed white}.target{position:absolute;right:7%;top:48%;width:80px;height:80px;border:5px solid var(--cyan);box-shadow:0 0 30px var(--cyan);border-radius:50%;transform:translateY(-50%)}.note{position:absolute;left:calc(20% + 10px);top:30%;width:64px;height:64px;border-radius:50%;background:var(--cream);border:4px solid var(--ink);display:grid;place-items:center;color:var(--ink);font-weight:1000;transition:left .2s}
+.play-guitar{position:absolute;left:5%;right:5%;bottom:55px;height:190px}.play-guitar .guitar{width:100%;height:100%;transform:rotate(0)}.keys{position:absolute;bottom:18px;left:0;right:0;display:flex;justify-content:center;gap:12px}.key{width:66px;height:58px;background:var(--panel);color:white;border:3px solid white;border-radius:13px;font-size:22px;font-weight:900;box-shadow:4px 4px 0 var(--ink)}.key.hot{border-color:var(--cyan);box-shadow:0 0 22px var(--cyan),4px 4px 0 var(--ink);transform:translateY(-4px)}.side-panel{background:var(--panel);border:4px solid var(--white);border-radius:28px;padding:25px}.side-panel h3{font-family:"Baloo 2";font-size:30px;margin:0 0 10px}.mini-note{font-size:15px;line-height:1.5;color:#ffeef8}.note-seq{display:flex;flex-wrap:wrap;gap:8px;margin:18px 0}.seq{padding:7px 11px;border-radius:10px;background:#30113d;border:2px solid #63376e;font-weight:900}.seq.current{background:var(--cyan);color:var(--ink);border-color:var(--ink)}.scorebox{border-top:2px solid #63376e;margin-top:20px;padding-top:18px}.scorebox strong{font-size:32px;color:var(--cream)}
+/* error */
+.error-dialog{grid-template-columns:48% 52%;background:var(--pink)}.error-dialog .dialog-copy{color:white}.error-dialog .bubble{color:var(--red);font-size:48px}.error-dialog img{object-position:center}
+/* complete */
+.complete{max-width:1200px;margin:30px auto;display:grid;grid-template-columns:380px 1fr;gap:30px;align-items:center}.complete img{width:100%;max-height:690px;object-fit:contain;filter:drop-shadow(10px 10px 0 var(--ink))}.complete-card{background:white;color:var(--ink);border:5px solid var(--ink);border-radius:30px;padding:30px;box-shadow:12px 12px 0 var(--ink)}.complete-card h1{font-family:"Baloo 2";font-size:70px;line-height:.85;color:var(--cream);text-shadow:5px 5px 0 var(--ink);margin:0 0 20px}.stats{display:grid;grid-template-columns:1fr 1fr;gap:12px}.stat{border-bottom:2px solid #ddd;padding:10px}.stat b{display:block;font-size:25px}.mysore{display:flex;gap:12px;align-items:center;margin:18px 0}.pak{width:58px;height:58px;border:4px solid var(--ink);border-radius:9px;background:linear-gradient(145deg,#ffc54f,#c96b19);box-shadow:4px 4px 0 var(--ink);transform:rotate(4deg)}.glixon-line{font-family:"Baloo 2";font-size:30px;color:#05a6a3}
+.toast{position:fixed;left:50%;top:20px;transform:translate(-50%,-150%);background:var(--cream);color:var(--ink);border:4px solid var(--ink);border-radius:999px;padding:12px 22px;font-weight:1000;z-index:100;transition:.25s}.toast.show{transform:translate(-50%,0)}
+@media(max-width:900px){.intro-inner,.home-grid,.play-board,.complete{grid-template-columns:1fr}.hero-char{height:55vh}.nav{display:none}.dialog{grid-template-columns:1fr}.dialog img{min-height:250px;max-height:380px}.play-board{gap:15px}.complete img{max-height:450px}}
+</style>
+</head>
+<body>
+<div class="app">
+  <section id="intro" class="screen active">
+    <div class="intro-inner">
+      <div class="intro-copy">
+        <span class="badge">01 · CHARACTER ENTRANCE</span>
+        <div class="speech">ആഹാ... ഓഹോ...!</div>
+        <h1 class="comic-title">MALLU<br><em>GUITAR HERO</em></h1>
+        <p>Music makes everything better.<br><b>Even one string.</b></p>
+        <div class="intro-controls"><button class="btn" onclick="goHome()">CONTINUE ▶</button></div>
+      </div>
+      <img class="hero-char" src="assets/baiju.png" alt="Baiju Chettan with guitar">
+    </div>
+  </section>
+
+  <section id="home" class="screen">
+    <div class="topbar">
+      <div class="brand">🎸 MALLU <span>GUITAR HERO</span></div>
+      <div class="nav"><button class="active">Home</button><button onclick="scrollToSongs()">Songs</button><button onclick="showJoel('tutorial')">Learn</button><button>Profile</button></div>
+      <div class="profile"><img class="avatar" src="assets/baiju.png"> ChettanFan<br><small>Level 3</small></div>
+    </div>
+    <div class="home-grid">
+      <div class="welcome">
+        <span class="badge">02 · HOME PAGE</span>
+        <h2 class="comic-title">Namaskaram,<br>Let's make some music!</h2>
+        <p>Pick a song. Hit the notes. Collect Mysore Pak.</p>
+        <button class="btn cyan" onclick="showJoel('play')">START PLAYING ▶</button>
+        <div id="songs" class="tutorials" style="margin-top:35px">
+          <div class="song-card"><b>★ Twinkle Twinkle</b><small>Easy · 14 notes</small><button onclick="showJoel('song:twinkle')">PRACTICE</button></div>
+          <div class="song-card"><b>☕ Ode to Joy</b><small>Easy · 16 notes</small><button onclick="showJoel('song:ode')">PRACTICE</button></div>
+          <div class="song-card"><b>🎂 Happy Birthday</b><small>Medium · 25 notes</small><button onclick="showJoel('song:birthday')">PRACTICE</button></div>
+          <div class="song-card"><b>🎵 Free Play</b><small>Make your own tune</small><button onclick="showJoel('free')">PLAY</button></div>
+        </div>
+      </div>
+      <div class="guitar-stage"><div class="guitar" aria-label="one string guitar">
+        <div class="guitar-body"></div><div class="guitar-neck"></div><div class="guitar-head"></div><div class="guitar-string"></div><div class="fretmarks"></div>
+      </div></div>
+    </div>
+  </section>
+
+  <section id="play" class="screen">
+    <div class="topbar">
+      <div class="brand">🎸 OTTA <span>KAMBI</span></div>
+      <div class="nav"><button onclick="goHome()">Home</button><button class="active">Play</button><button onclick="goHome()">Songs</button></div>
+      <div class="profile">Score <b id="topScore">0</b> 🍯</div>
+    </div>
+    <div class="play-wrap">
+      <div class="play-head"><div><span class="badge">04 · PLAY / TUTORIAL</span><h2 id="songTitle" style="margin:10px 0 0;font-family:'Baloo 2';font-size:42px">Twinkle Twinkle · EASY</h2></div><div class="progress"><i id="progressFill"></i></div><b id="counter">0 / 14</b></div>
+      <div class="play-board">
+        <div class="game-card">
+          <div class="note-lane"></div><div id="target" class="target"></div><div id="fallingNote" class="note">A</div>
+          <div class="play-guitar"><div class="guitar"><div class="guitar-body"></div><div class="guitar-neck"></div><div class="guitar-head"></div><div class="guitar-string"></div><div class="fretmarks"></div></div></div>
+          <div class="keys" id="keys"></div>
+        </div>
+        <aside class="side-panel">
+          <h3>Hit the glowing key!</h3>
+          <p class="mini-note">Press the highlighted PC keyboard key when the note reaches the circle. You can also click the key.</p>
+          <div id="seq" class="note-seq"></div>
+          <div class="scorebox">CURRENT SCORE<br><strong id="score">0</strong><br><small>Perfect: <span id="perfect">0</span> · Misses: <span id="misses">0</span></small></div>
+          <button class="btn" style="margin-top:20px;width:100%" onclick="goHome()">EXIT SONG</button>
+        </aside>
+      </div>
+    </div>
+  </section>
+
+  <section id="complete" class="screen">
+    <div class="complete">
+      <img src="assets/glixon.png" alt="Glixon">
+      <div class="complete-card">
+        <span class="badge">06 · SONG COMPLETE</span>
+        <h1>SONG<br>COMPLETE!</h1>
+        <h2 style="font-family:'Baloo 2';font-size:30px">Well played! 🍯</h2>
+        <div class="mysore"><div class="pak"></div><div class="pak"></div><div class="pak"></div><div><b>MYSORE PAK</b><br><span id="pakCount">0</span> earned</div></div>
+        <div class="stats">
+          <div class="stat">SCORE <b id="finalScore">0</b></div><div class="stat">ACCURACY <b id="accuracy">0%</b></div>
+          <div class="stat">PERFECT NOTES <b id="finalPerfect">0</b></div><div class="stat">MISSED NOTES <b id="finalMisses">0</b></div>
+        </div>
+        <div class="glixon-line">GLIXON APPROVES! 🎶</div>
+        <div style="display:flex;gap:14px;margin-top:25px"><button class="btn" onclick="restartSong()">REPLAY ↻</button><button class="btn dark" onclick="goHome()">HOME ⌂</button></div>
+      </div>
+    </div>
+  </section>
+
+  <div id="joelOverlay" class="overlay">
+    <div class="dialog">
+      <button class="close" onclick="closeJoel()">×</button>
+      <img src="assets/joel.png" alt="Joel">
+      <div class="dialog-copy">
+        <div class="bubble">Ayyappaa!</div>
+        <h2>Ready to<br>make some noise?</h2>
+        <p>Time to hit the right note, macha!</p>
+        <button class="btn" onclick="beginFromJoel()">BEGIN ▶</button>
+      </div>
+    </div>
+  </div>
+
+  <div id="errorOverlay" class="overlay">
+    <div class="dialog error-dialog">
+      <button class="close" onclick="closeError()">×</button>
+      <div class="dialog-copy"><div class="bubble">Oops!</div><h2>Wrong note!</h2><p>Baiju Chettan has noticed. 😭</p><button class="btn" onclick="closeError()">TRY AGAIN ↻</button></div>
+      <img src="assets/baiju.png" alt="Baiju Chettan">
+    </div>
+  </div>
+  <div id="toast" class="toast">🎵 Nice!</div>
+</div>
+<script>
+const songs={
+  twinkle:{name:"Twinkle Twinkle",difficulty:"EASY",notes:[0,0,7,7,9,9,7,5,5,3,3,2,2,0]},
+  ode:{name:"Ode to Joy",difficulty:"EASY",notes:[2,2,4,5,5,4,2,0,0,2,2,2,2,0,0,0]},
+  birthday:{name:"Happy Birthday",difficulty:"MEDIUM",notes:[5,5,7,5,10,9,5,5,7,5,12,10,5,5,5,14,12,9,7,6,6,5,7,5,10]}
+};
+const keyMap=['a','s','d','f','g','h','j','k','l',';','q','w','e','r','t'];
+const baseHz=293.66; // D4 open string
+let audioCtx=null, currentSong=null, index=0, score=0, perfect=0, misses=0, started=false, pendingAction='play';
+
+function screen(id){document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));document.getElementById(id).classList.add('active');}
+function goHome(){screen('home'); closeJoel(); closeError();}
+function scrollToSongs(){document.getElementById('songs').scrollIntoView({behavior:'smooth'});}
+function showJoel(action){pendingAction=action;document.getElementById('joelOverlay').classList.add('show')}
+function closeJoel(){document.getElementById('joelOverlay').classList.remove('show')}
+function beginFromJoel(){
+  closeJoel();
+  if(pendingAction.startsWith('song:')) startSong(pendingAction.split(':')[1]);
+  else startSong('twinkle');
+}
+function showToast(t){const x=document.getElementById('toast');x.textContent=t;x.classList.add('show');clearTimeout(showToast.t);showToast.t=setTimeout(()=>x.classList.remove('show'),850)}
+function ensureAudio(){if(!audioCtx)audioCtx=new (window.AudioContext||window.webkitAudioContext)();if(audioCtx.state==='suspended')audioCtx.resume()}
+function pluck(freq,when=0){
+  ensureAudio();
+  const duration=.9, sr=audioCtx.sampleRate, len=Math.floor(sr*duration);
+  const buf=audioCtx.createBuffer(1,len,sr), data=buf.getChannelData(0), period=Math.max(2,Math.floor(sr/freq));
+  for(let i=0;i<period;i++) data[i]=(Math.random()*2-1)*.8;
+  for(let i=period;i<len;i++) data[i]=(data[i-period]+data[i-period+1]||0)*.498;
+  const src=audioCtx.createBufferSource(), gain=audioCtx.createGain(), filt=audioCtx.createBiquadFilter();
+  filt.type='lowpass';filt.frequency.value=3200;
+  src.buffer=buf;src.connect(filt);filt.connect(gain);gain.connect(audioCtx.destination);
+  const t=audioCtx.currentTime+when;gain.gain.setValueAtTime(.0001,t);gain.gain.exponentialRampToValueAtTime(.65,t+.008);gain.gain.exponentialRampToValueAtTime(.0001,t+duration);
+  src.start(t);src.stop(t+duration+.05);
+}
+function fretHz(fret){return baseHz*Math.pow(2,fret/12)}
+function buildKeys(){
+  const box=document.getElementById('keys');box.innerHTML='';
+  keyMap.slice(0,8).forEach((k,i)=>{const b=document.createElement('button');b.className='key';b.id='key-'+k;b.textContent=k.toUpperCase();b.onclick=()=>hit(i,k);box.appendChild(b)})
+}
+function renderSequence(){
+  const s=songs[currentSong].notes, box=document.getElementById('seq');box.innerHTML='';
+  s.forEach((n,i)=>{const d=document.createElement('span');d.className='seq'+(i===index?' current':'');d.textContent=keyMap[n] ? keyMap[n].toUpperCase() : n;box.appendChild(d)})
+}
+function startSong(id){
+  currentSong=id;index=0;score=0;perfect=0;misses=0;started=true;
+  document.getElementById('songTitle').textContent=songs[id].name+' · '+songs[id].difficulty;
+  buildKeys();renderSequence();updateUI();screen('play');nextNote();
+}
+function restartSong(){startSong(currentSong||'twinkle')}
+function updateUI(){
+  const total=songs[currentSong]?.notes.length||1;
+  document.getElementById('score').textContent=score;document.getElementById('topScore').textContent=score;
+  document.getElementById('perfect').textContent=perfect;document.getElementById('misses').textContent=misses;
+  document.getElementById('counter').textContent=index+' / '+total;
+  document.getElementById('progressFill').style.width=(index/total*100)+'%';
+  renderSequence();
+}
+function nextNote(){
+  if(index>=songs[currentSong].notes.length){finishSong();return}
+  const fret=songs[currentSong].notes[index], key=keyMap[fret]||'a';
+  document.querySelectorAll('.key').forEach(x=>x.classList.remove('hot'));const kb=document.getElementById('key-'+key);if(kb)kb.classList.add('hot');
+  const n=document.getElementById('fallingNote');n.textContent=key.toUpperCase();n.style.top='30%';n.style.left='calc(20% + 10px)';
+  // visual travel
+  requestAnimationFrame(()=>{n.style.left='calc(80% - 40px)'});
+}
+function hit(fret,key){
+  if(!started)return;
+  const expected=songs[currentSong].notes[index], correct=fret===expected || key===keyMap[expected];
+  if(correct){
+    pluck(fretHz(expected));score+=100;perfect++;index++;showToast('🎵 Perfect! +100');
+    updateUI();setTimeout(nextNote,180);
+  }else{
+    pluck(fretHz(Math.max(0,fret)));misses++;score=Math.max(0,score-30);showToast('❌ Wrong note');document.getElementById('errorOverlay').classList.add('show');updateUI();
+  }
+}
+function closeError(){document.getElementById('errorOverlay').classList.remove('show');nextNote()}
+function finishSong(){
+  started=false;const total=songs[currentSong].notes.length, acc=Math.round((perfect/Math.max(1,total))*100), pak=Math.max(1,Math.floor(score/100));
+  document.getElementById('finalScore').textContent=score;document.getElementById('accuracy').textContent=acc+'%';document.getElementById('finalPerfect').textContent=perfect;document.getElementById('finalMisses').textContent=misses;document.getElementById('pakCount').textContent=pak;
+  screen('complete');
+}
+document.addEventListener('keydown',e=>{
+  if(document.getElementById('play').classList.contains('active')){
+    const k=e.key.toLowerCase(), i=keyMap.indexOf(k);if(i>=0){e.preventDefault();hit(i,k)}
+  }else if(e.key==='Enter'&&document.getElementById('intro').classList.contains('active'))goHome();
+});
+</script>
+</body>
+</html>
