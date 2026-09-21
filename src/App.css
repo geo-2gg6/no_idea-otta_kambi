@@ -91,4 +91,15 @@ button{font:inherit;cursor:pointer}img{display:block;max-width:100%}.screen{disp
 	.journey-car-wrap{width:62px}
 	.camera-end{right:6px;width:52px;height:34px}
 	.mysore-hud{top:8px;right:8px;transform:scale(.72);transform-origin:top right}
+	.seo-heading {
+  		position: absolute;
+  		width: 1px;
+  		height: 1px;
+  		padding: 0;
+  		margin: -1px;
+  		overflow: hidden;
+  		clip: rect(0, 0, 0, 0);
+  		white-space: nowrap;
+  		border: 0;
+	}
 }
