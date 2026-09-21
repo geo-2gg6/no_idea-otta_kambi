@@ -16,6 +16,7 @@ const themes = {
   ROOM17: { primary: '#f20b73', secondary: '#1bb8ff', accent: '#18f4ee', background: '#13051a' },
 } as const
 
+const INSTAGRAM_REEL_URL = 'https://www.instagram.com/reel/Ddd9lrPtF9r/?utm_source=ig_web_button_share_sheet&stkn=MzRlODBiNWFlZA=='
 const keyboard: GuitarKey[] = ['A', 'S', 'D', 'F', 'G', 'H', 'J', 'K']
 const initialStats: Stats = { score: 0, perfect: 0, good: 0, missed: 0, combo: 0, maxCombo: 0, mysorePak: 12 }
 
@@ -39,6 +40,7 @@ function App() {
   const [dialogue, setDialogue] = useState<'joel' | 'nadasha' | null>(null)
   const [dialogueReady, setDialogueReady] = useState(false)
   const [flash, setFlash] = useState(false)
+  const [reelOpen, setReelOpen] = useState(false)
   const [audioEnabled, setAudioEnabled] = useState(true)
   const [musicEnabled, setMusicEnabled] = useState(true)
   const [results, setResults] = useState<Stats>(initialStats)
@@ -276,6 +278,40 @@ function App() {
     {screen === 'results' && renderResults()}
     {dialogue === 'joel' && <DialoguePopup image={assets.characters.joel} alt="Joel" title="AYYAPPAA!" buttonLabel="BEGIN" audioReady={dialogueReady} onClose={() => { setDialogue(null); navigate('home') }} onContinue={beginMode}><h2>Ready to make some noise?</h2><p>Time to hit the right note, macha!</p></DialoguePopup>}
     {dialogue === 'nadasha' && <DialoguePopup image={assets.characters.nadasha} alt="Nadasha" title="ENOUGH!" buttonLabel="BACK TO SONG" audioReady={dialogueReady} onClose={() => setDialogue(null)} onContinue={() => setDialogue(null)}><h2>Don't produce too much okay!</h2></DialoguePopup>}
+    {(screen === 'character' || screen === 'baiju' || screen === 'home') && (
+      <div className={`reel-launcher ${reelOpen ? 'open' : ''}`}>
+        <button type="button" className="reel-fab" onClick={() => setReelOpen((value) => !value)} aria-label="Toggle BTS reel panel">
+          <span className="reel-fab-icon">◎</span>
+          <span>{reelOpen ? 'Close' : 'BTS reel'}</span>
+        </button>
+
+        {reelOpen && (
+          <div className="reel-panel">
+            <div className="reel-header">
+              <span className="badge small-badge">BTS / DEV TEAM</span>
+              <button type="button" className="reel-close" onClick={() => setReelOpen(false)} aria-label="Close BTS reel panel">×</button>
+            </div>
+
+            <p className="reel-copy">Behind the scenes from the team making Otta Kambi.</p>
+
+            <div className="reel-embed-wrap">
+              <iframe
+                src="https://www.instagram.com/reel/Ddd9lrPtF9r/embed"
+                title="Otta Kambi BTS reel"
+                className="reel-embed"
+                loading="lazy"
+                allowFullScreen
+                referrerPolicy="strict-origin-when-cross-origin"
+              />
+            </div>
+
+            <a href={INSTAGRAM_REEL_URL} target="_blank" rel="noreferrer" className="main-btn reel-link">
+              Watch on Instagram
+            </a>
+          </div>
+        )}
+      </div>
+    )}
     <div className={`toast ${toast ? 'show' : ''}`}>{toast}</div>
   </div>
 }
